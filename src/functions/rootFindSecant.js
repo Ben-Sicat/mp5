@@ -23,10 +23,13 @@ import next from 'next';
 
 // ! todo: review for refactoring
 
-function rootFindSecant({userFunction, firstGuessPoint, secondGuessPoint, numberOfIterations = 100, tolerance}) {
+export function rootFindSecant({userFunction, firstGuessPoint, secondGuessPoint, numberOfIterations, tolerance}) {
   // ? when user selected iterative approach, show c, f(c), Ɛ = last iteration - previous iteration
   // ? when user selected tolerance approach, c, f(c), number of iterations
   // ? c = nextPoint, f(c) = nextPointOutput
+  tolerance = parseFloat(tolerance)
+  if (numberOfIterations === 0) numberOfIterations = 100;
+
   // makes the array one-based index
   const result = [{}];
   const parsedUserFunction = math.parse(userFunction);
@@ -57,9 +60,14 @@ function rootFindSecant({userFunction, firstGuessPoint, secondGuessPoint, number
 
       currentIteration.nextPointOutput = executableFunction.evaluate(nextPointScope)
 
+      
       result.push(currentIteration);
 
-      if (tolerance && math.abs(currentIteration.firstPoint - currentIteration.secondPoint) < tolerance ) break;
+      const iterationTolerance = currentIteration.toleranceValue = math.abs(currentIteration.secondPoint - currentIteration.firstPoint);
+      currentIteration.toleranceValue = iterationTolerance;
+      if (iterationTolerance < tolerance) {
+        break;
+      };
     }
 
   return result;
@@ -75,6 +83,6 @@ const exampleSecantInput = {
   tolerance: 0.0001 ?? 0
 }
 
-export default function testSecant() {
+export function testSecant() {
   console.log(rootFindSecant(exampleSecantInput));
 }
