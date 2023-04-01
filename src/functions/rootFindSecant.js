@@ -17,77 +17,51 @@ import next from 'next';
 // ? part 1:
 // ? predefined function from previous machine problem - ln(x + 1)
 // ? use bisection and secant.
-// ? when user selected iterative approach, show c,f(c),
-// ? when user selected error propagated approach, show number of iteration before reaching the approximated root.
 // ? part 2:
 // ? user defined function
 // ? same shit from part 1
 
 // ! todo: review for refactoring
 
-function rootFindSecant({userFunction, firstGuessPoint, secondGuessPoint, numberOfIterations, tolerance}) {
+function rootFindSecant({userFunction, firstGuessPoint, secondGuessPoint, numberOfIterations = 100, tolerance}) {
+  // ? when user selected iterative approach, show c, f(c), Ɛ = last iteration - previous iteration
+  // ? when user selected tolerance approach, c, f(c), number of iterations
+  // ? c = nextPoint, f(c) = nextPointOutput
   // makes the array one-based index
   const result = [{}];
   const parsedUserFunction = math.parse(userFunction);
   const executableFunction = parsedUserFunction.compile();
 
-  let firstPointScope = {
-    x: firstGuessPoint,
-  }
+  for (let i = 1; i <= numberOfIterations; ++i) {
+      let firstPointScope = {
+        x: i === 1 ?  firstGuessPoint : result[i - 1].secondPoint,
+      }
 
-  let secondPointScope = {
-    x: secondGuessPoint,
-  }
+      let secondPointScope = {
+        x: i === 1 ?  secondGuessPoint : result[i - 1].nextPoint,
+      }
 
-  const firstIteration = ({
-    iteration: 1,
-    firstPoint: firstGuessPoint,
-    secondPoint: secondGuessPoint,
-    firstPointOutput: executableFunction.evaluate(firstPointScope),
-    secondPointOutput: executableFunction.evaluate(secondPointScope),
-  })
-  
-  firstIteration.nextPoint = firstIteration.secondPoint - ((firstIteration.secondPointOutput * (firstIteration.secondPoint - firstIteration.firstPoint))/(firstIteration.secondPointOutput - firstIteration.firstPointOutput))
-
-  let nextPointScope = {
-    x: firstIteration.nextPoint
-  }
-
-  firstIteration.nextPointOutput = executableFunction.evaluate(nextPointScope)
-
-  result.push(firstIteration);
-
-  for (let i = 2; i <= numberOfIterations; ++i) {
-    // reassignment will execute first, index - 1
-      const nextIteration = {
+      const currentIteration = ({
         iteration: i,
-        firstPoint: result[i - 1].secondPoint,
-        secondPoint: result[i - 1].nextPoint,
+        firstPoint: firstPointScope.x,
+        secondPoint: secondPointScope.x,
+        firstPointOutput: executableFunction.evaluate(firstPointScope),
+        secondPointOutput:  executableFunction.evaluate(secondPointScope)
+      })
+
+      currentIteration.nextPoint = currentIteration.secondPoint - ((currentIteration.secondPointOutput * (currentIteration.secondPoint - currentIteration.firstPoint))/(currentIteration.secondPointOutput - currentIteration.firstPointOutput))
+
+      let nextPointScope = {
+        x: currentIteration.nextPoint
       }
 
-      firstPointScope = {
-        x: nextIteration.firstPoint,
-      }
-      
-      secondPointScope = {
-        x: nextIteration.secondPoint,
-      }
+      currentIteration.nextPointOutput = executableFunction.evaluate(nextPointScope)
 
-      nextIteration.firstPointOutput = executableFunction.evaluate(firstPointScope)
-      nextIteration.secondPointOutput = executableFunction.evaluate(secondPointScope)
+      result.push(currentIteration);
 
-      nextIteration.nextPoint = nextIteration.secondPoint - ((nextIteration.secondPointOutput * (nextIteration.secondPoint - nextIteration.firstPoint))/(nextIteration.secondPointOutput - nextIteration.firstPointOutput))
-
-      nextPointScope = {
-        x: nextIteration.nextPoint
-      }
-      
-      nextIteration.nextPointOutput = executableFunction.evaluate(nextPointScope)
-      
-      result.push(nextIteration);
-      
-      if (math.abs(nextIteration.firstPoint - nextIteration.secondPoint) < tolerance ) break;
+      if (tolerance && math.abs(currentIteration.firstPoint - currentIteration.secondPoint) < tolerance ) break;
     }
+
   return result;
 }
 
@@ -95,8 +69,10 @@ const exampleSecantInput = {
   userFunction: '3x^3-x-1',
   firstGuessPoint: -1,
   secondGuessPoint: 1,
-  numberOfIterations: 20,
-  tolerance: 0.0001
+  // if user selected tolerance value
+  numberOfIterations: 20 ?? 100,
+  // if user selected iterative
+  tolerance: 0.0001 ?? 0
 }
 
 export default function testSecant() {
