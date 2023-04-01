@@ -46,7 +46,7 @@ export const outputText = {
   marginBottom: "1em"
 }
 
-function Defined({ rootFunctionValueType }) {
+function RootFind({ rootFunctionValueType }) {
   const [rootFindInput, setRootFindInput] = useState({
     userFunction: rootFunctionValueType === "predefined" ? "log(x+1,e)" : "",
     firstGuessPoint: 0,
@@ -202,4 +202,4 @@ function Defined({ rootFunctionValueType }) {
   )
 }
 
-export default Defined
+export default RootFind

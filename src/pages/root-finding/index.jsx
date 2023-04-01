@@ -5,8 +5,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material'
-import PreDefined from './components/PreDefined'
-import Defined from './components/Defined'
+import RootFind from './components/RootFind'
 import { testSecant } from '../../functions/rootFindSecant'
 import { testBisection } from '../../functions/rootFindBisection'
 
@@ -21,7 +20,7 @@ const rootContainer = {
   backgroundColor: 'white',
 }
 
-function RootFind() {
+function Index() {
   const [itemValue, setItemValue] = useState('predefined')
 
   useEffect(() => {
@@ -50,11 +49,11 @@ function RootFind() {
         </FormControl>
       </Box>
       <Box>
-        <Defined rootFunctionValueType={itemValue} />
+        <RootFind rootFunctionValueType={itemValue} />
       </Box>
 
       </Box>
   )
 }
 
-export default RootFind
+export default Index
