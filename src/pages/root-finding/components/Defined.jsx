@@ -1,33 +1,22 @@
 import React, { useState }  from 'react'
 import {
+  Box,
+  Typography,
   FormControl,
   InputLabel,
-  TextField
+  FormLabel,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  FormControlLabel
 } from '@mui/material'
 
-import { InlineMath, BlockMath } from 'react-katex';
-
-// i need a function that can calculate the secant formula with the object as it's parameter, unwrap it.
-// calculation output
-// for let i = 1; i <= n; i++
-// do secant method stuff
-// push results
-// result = {
-//      1: [{}],
-//       2: [{}],
-      // ...
-      // n: [{}]
-// }
-
-function formatSecantValue(userFunction, firstGuess, secondGuess, numberOfIterations, accuracy) {
-  return {
-    userFunction,
-    firstGuess,
-    secondGuess,
-    numberOfIterations,
-    accuracy
-  }
-}
+import { InlineMath } from 'react-katex';
+import { rootFindSecant, testSecant} from '../../../functions/rootFindSecant';
+import { rootFindBisection } from '../../../functions/rootFindBisection';
 
 export const inputGroup = {
   display: 'flex',
@@ -57,58 +46,158 @@ export const outputText = {
   marginBottom: "1em"
 }
 
-function Defined() {
-  const [userValues, setUserValue] = useState({
-    userFunction: 'f(x)',
-    firstGuess: 0,
-    secondGuess: 0,
+function Defined({ rootFunctionValueType }) {
+  const [rootFindInput, setRootFindInput] = useState({
+    userFunction: rootFunctionValueType === "predefined" ? "log(x+1,e)" : "",
+    firstGuessPoint: 0,
+    secondGuessPoint: 1,
     numberOfIterations: 0,
-    accuracy: 0,
+    tolerance: 0,
   })
+  const [rootFindOutput, setRootFindOutput] = useState([])
+  const [isCalculate, setIsCalculate] = useState(false);
+  const [errMessage, setErrMessage] = useState('');
+  const [selectedMethod, setSelectedMethod] = useState('');
+  const [selectedApproach, setSelectedApproach] = useState('')
+  
+  async function handleSubmit(e) {
+    if (rootFindInput.userFunction === "" || rootFindInput.userFunction === "f(x)") {
+      // setErrMessage('Please enter a valid function');
+      return;
+    }
+    
+    try {
+      e.preventDefault();
+      setIsCalculate(true);
+      console.log(rootFindInput)
+      console.log(rootFindSecant(rootFindInput));
+      console.log(rootFindBisection(rootFindInput))
+      if (selectedMethod === "bisection") {
+        setRootFindOutput(rootFindBisection(rootFindInput))
+        return;
+      }
+      setRootFindOutput(rootFindSecant(rootFindInput));
+    } catch (e) {
+      setErrMessage(`There was a problem processing your request: ${e.message}`)
+    }
+  }
 
-  function handleIterationFocus() {}
-  function handleAccuracyFocus() {}
+  function resetForm(e) {
+    setRootFindInput({
+      userFunction: rootFunctionValueType === "predefined" ? "log(x+1,e)" : "",
+      firstGuessPoint: 0,
+      secondGuessPoint: 1,
+      numberOfIterations: 0,
+      tolerance: 0,
+    })
+    setErrMessage('');
+    setSelectedMethod('');
+    setIsCalculate(false);
+    setSelectedApproach('');
+    setRootFindOutput([]);
+  }
+
+  function handleApproachChange(e) {
+    setSelectedApproach(e.target.value)
+  }
+
+  function handleMethodChange(e) {
+    setSelectedMethod(e.target.value);
+  }
 
   return (
     <div>
-      <FormControl sx={inputGroup}>
-        <TextField
+      <FormControl>
+        <FormLabel id="root-find-approach-label">Approach</FormLabel>
+        <RadioGroup
+          row
+          name="root-find-approach-group"
+          value={selectedApproach}
+          onChange={handleApproachChange}
+        >
+          <FormControlLabel value="iterative" control={<Radio />} label="Iterative approach" />
+          <FormControlLabel value="tolerance" control={<Radio />} label="Tolerance approach (Ɛ)" />
+        </RadioGroup>
+      </FormControl>
+
+      <FormControl>
+        <FormLabel id="root-find-method-label">Method</FormLabel>
+        <RadioGroup
+          row
+          name="root-find-method-group"
+          value={selectedMethod}
+          onChange={handleMethodChange}
+        >
+          <FormControlLabel value="bisection" control={<Radio />} label="Bisection method" />
+          <FormControlLabel value="secant" control={<Radio />} label="Secant method" />
+        </RadioGroup>
+      </FormControl>
+
+       <FormControl sx={inputGroup}>
+
+        {rootFunctionValueType === "userdefined" && <TextField
           sx={inputStyle}
           id="equation"
-          label={"Function"}
-          value={userValues.functionOfX}
-          onChange={(prev, e) => setUserValue({...prev, functionOfX: e.target.value})} />
+          label="f(x)"
+          value={rootFindInput.userFunction}
+          onChange={(e) => setRootFindInput(prev => ({ ...prev, userFunction: e.target.value }))} />}
+
+        {rootFunctionValueType === "predefined" && <Typography variant="h4"> ln(x + 1)</Typography>}
 
         <TextField
           sx={inputStyle}
           id="first_guess"
-          label="First guess value"
-          value={userValues.firstGuess}
-          onChange={(prev, e) => setUserValue({...prev, firstGuess: e.target.value})} />
+          label="x0"
+          value={rootFindInput.firstGuessPoint}
+          onChange={(e) => setRootFindInput(prev => ({...prev, firstGuessPoint: e.target.value}))} />
 
         <TextField
           sx={inputStyle}
           id="equation"
-          label="Second guess value"
-          value={userValues.secondGuess}
-          onChange={(prev, e) => setUserValue({...prev, secondGuess: e.target.value})} />
+          label="x1"
+          value={rootFindInput.secondGuessPoint}
+          onChange={(e) => setRootFindInput(prev => ({...prev, secondGuessPoint: e.target.value}))} />
 
-        <TextField
-          sx={inputStyle}
-          id="equation"
-          label="Number of iterations"
-          onFocus={handleIterationFocus}
-          value={userValues.numberOfIterations}
-          onChange={(prev, e) => setUserValue({...prev, numberOfIterations: e.target.value})} />
+        {selectedApproach === "iterative" &&
+          <TextField
+            sx={inputStyle}
+            id="equation"
+            label="Number of iterations"
+            value={rootFindInput.numberOfIterations}
+            onChange={(e) => setRootFindInput(prev => ({...prev, numberOfIterations: e.target.value}))} />
+        }
 
-        <TextField
-          sx={inputStyle}
-          id="equation"
-          label="Accuracy value"
-          value={userValues.accuracy}
-          onFocus={handleAccuracyFocus}
-          onChange={(prev, e) => setUserValue({...prev, accuracy: e.target.value})} />
+        {selectedApproach === "tolerance" &&
+          <TextField
+            sx={inputStyle}
+            id="equation"
+            label="Ɛ"
+            value={rootFindInput.tolerance}
+            onChange={(e) => setRootFindInput(prev => ({...prev, tolerance: e.target.value}))} />
+        }
       </FormControl>
+
+      {
+        isCalculate && selectedMethod === "secant" && <>
+            {`c = ${rootFindOutput[rootFindOutput.length - 1].nextPoint}`}
+            {`f(c) = ${rootFindOutput[rootFindOutput.length - 1].nextPointOutput}`}
+            {`${selectedApproach === "iterative" ? `Ɛ = ${rootFindOutput[rootFindOutput.length - 1].toleranceValue}`: `n=${rootFindOutput[rootFindOutput.length - 1].iteration}`}`}
+        </>
+      }
+
+      {
+        isCalculate && selectedMethod === "bisection" && <>
+            {`c = ${rootFindOutput[rootFindOutput.length - 1].midpoint}`}
+            {`f(c) = ${rootFindOutput[rootFindOutput.length - 1].midpointOutput}`}
+            {`${selectedApproach === "iterative" ? `Ɛ = ${rootFindOutput[rootFindOutput.length - 1].toleranceValue}`: `n=${rootFindOutput[rootFindOutput.length - 1].iteration}`}`}
+        </>
+      }
+<Button variant="contained" type="submit" onClick={handleSubmit}>
+        Calculate
+      </Button>
+      {/* {!isCalculate ?  : <Button variant="contained" onClick={resetForm}> Restart </Button>} */}
+
+        {!isCalculate && <Typography type="error" sx={{ color: "red"}}>{errMessage}</Typography>}
     </div>
   )
 }

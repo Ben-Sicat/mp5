@@ -7,8 +7,8 @@ import {
 } from '@mui/material'
 import PreDefined from './components/PreDefined'
 import Defined from './components/Defined'
-import testSecant from '../../functions/rootFindSecant'
-import testBisection from '../../functions/rootFindBisection'
+import { testSecant } from '../../functions/rootFindSecant'
+import { testBisection } from '../../functions/rootFindBisection'
 
 const rootContainer = {
   display: 'flex',
@@ -22,12 +22,12 @@ const rootContainer = {
 }
 
 function RootFind() {
-  const [itemValue, setItemValue] = useState('userdefined')
+  const [itemValue, setItemValue] = useState('predefined')
 
   useEffect(() => {
     console.log("secant method", testSecant());
     console.log("bisection method", testBisection());
-  }, [])
+  }, [itemValue])
 
   function handleChange(e) {
     e.preventDefault();
@@ -40,7 +40,7 @@ function RootFind() {
         <FormControl fullWidth>
             <Select
               id="select"
-              defaultValue='approximation'
+              defaultValue='predefined'
               value={itemValue}
               onChange={handleChange}
             >
@@ -50,7 +50,7 @@ function RootFind() {
         </FormControl>
       </Box>
       <Box>
-        {itemValue === "predefined" ? <PreDefined/> : <Defined/>}
+        <Defined rootFunctionValueType={itemValue} />
       </Box>
 
       </Box>
