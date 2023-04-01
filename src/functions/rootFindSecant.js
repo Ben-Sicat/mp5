@@ -1,32 +1,10 @@
 import * as math from 'mathjs';
 import next from 'next';
 
-// ? formula logic
-// * the loop is dependent to the number of iterations
-// * at first iteration: 
-// * first guess value is used to find the first point user defined function output
-// * second guess value is used to find the second point user defined function output
-// * first and second point user defined output will be used to find the next point using the secant formula
-// * 
-// * then the next point will always be assigned to second point on following iterations
-
-// ? can number of iterations and accuracy be both provided the user? if yes, find a logic that satisfies that
-// ? in part 2, are we only tasked to use one method for finding the root of user defined function?
-// ? in part 1, we only have to implement two methods, one of them is bisection, do we have to choose for the second one? it makes sense to use the assigned method (?) for part 2
-
-// ? part 1:
-// ? predefined function from previous machine problem - ln(x + 1)
-// ? use bisection and secant.
-// ? part 2:
-// ? user defined function
-// ? same shit from part 1
-
-// ! todo: review for refactoring
 
 export function rootFindSecant({userFunction, firstGuessPoint, secondGuessPoint, numberOfIterations, tolerance}) {
-  // ? when user selected iterative approach, show c, f(c), Ɛ = last iteration - previous iteration
+  // ? when user selected iterative approach, show c, f(c), Ɛ = | last iteration - previous iteration |
   // ? when user selected tolerance approach, c, f(c), number of iterations
-  // ? c = nextPoint, f(c) = nextPointOutput
   tolerance = parseFloat(tolerance)
   if (numberOfIterations === 0) numberOfIterations = 100;
 
@@ -65,7 +43,7 @@ export function rootFindSecant({userFunction, firstGuessPoint, secondGuessPoint,
 
       const iterationTolerance = currentIteration.toleranceValue = math.abs(currentIteration.secondPoint - currentIteration.firstPoint);
       currentIteration.toleranceValue = iterationTolerance;
-      if (iterationTolerance < tolerance) {
+      if (iterationTolerance < tolerance || currentIteration.secondPoint === 0) {
         break;
       };
     }
@@ -74,8 +52,8 @@ export function rootFindSecant({userFunction, firstGuessPoint, secondGuessPoint,
 }
 
 const exampleSecantInput = {
-  userFunction: '3x^3-x-1',
-  firstGuessPoint: -1,
+  userFunction: 'log(x+1, e)',
+  firstGuessPoint: 0,
   secondGuessPoint: 1,
   // if user selected tolerance value
   numberOfIterations: 20 ?? 100,
