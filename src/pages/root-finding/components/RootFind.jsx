@@ -97,35 +97,18 @@ function RootFind() {
       // setErrMessage('Please enter a valid function');
       return;
     }
-    try {
       e.preventDefault();
       setIsCalculate(true);
       console.log(rootFindInput)
-      console.log(rootFindSecant(rootFindInput));
+      // console.log(rootFindSecant(rootFindInput));
       console.log(rootFindBisection(rootFindInput))
+
       if (selectedMethod === "bisection") {
         setRootFindOutput(rootFindBisection(rootFindInput))
         return;
       }
-      setRootFindOutput(rootFindSecant(rootFindInput));
-    } catch (e) {
-      setErrMessage(`There was a problem processing your request: ${e.message}`)
-    }
-  }
 
-  function resetForm(e) {
-    setRootFindInput({
-      userFunction: rootFunctionValueType === "predefined" ? "log(x+1,e)" : "",
-      firstGuessPoint: 0,
-      secondGuessPoint: 1,
-      numberOfIterations: 0,
-      tolerance: 0,
-    })
-    setErrMessage('');
-    setSelectedMethod('');
-    setIsCalculate(false);
-    setSelectedApproach('');
-    setRootFindOutput([]);
+      setRootFindOutput(rootFindSecant(rootFindInput));
   }
 
   function handleApproachChange(e) {
@@ -139,6 +122,7 @@ function RootFind() {
   function handleChange(e) {
     e.preventDefault();
     setRootFunctionValueType(e.target.value);
+    setRootFindInput(prev => ({...prev, userFunction: e.target.value === "predefined" ? "log(x+1,e)": "f(x)"}));
   }
 
   return (
@@ -224,27 +208,20 @@ function RootFind() {
         }
       </FormControl>
 
-      {
-        isCalculate && selectedMethod === "secant" && <>
-            {`c = ${rootFindOutput[rootFindOutput.length - 1].nextPoint}`}
-            {`f(c) = ${rootFindOutput[rootFindOutput.length - 1].nextPointOutput}`}
-            {`${selectedApproach === "iterative" ? `Ɛ = ${rootFindOutput[rootFindOutput.length - 1].toleranceValue}`: `n=${rootFindOutput[rootFindOutput.length - 1].iteration}`}`}
-        </>
-      }
-
-      {
-        isCalculate && selectedMethod === "bisection" && <>
-            {`c = ${rootFindOutput[rootFindOutput.length - 1].midpoint}`}
-            {`f(c) = ${rootFindOutput[rootFindOutput.length - 1].midpointOutput}`}
-            {`${selectedApproach === "iterative" ? `Ɛ = ${rootFindOutput[rootFindOutput.length - 1].toleranceValue}`: `n=${rootFindOutput[rootFindOutput.length - 1].iteration}`}`}
-        </>
-      }
-<Button variant="contained" type="submit" onClick={handleSubmit}>
+      <Button variant="contained" type="submit" onClick={handleSubmit}>
         Calculate
       </Button>
-      {/* {!isCalculate ?  : <Button variant="contained" onClick={resetForm}> Restart </Button>} */}
 
         {!isCalculate && <Typography type="error" sx={{ color: "red"}}>{errMessage}</Typography>}
+      {isCalculate && 
+        <>
+          <Box sx={outputContainer}>
+            <p>{`c = ${rootFindOutput[rootFindOutput.length - 1].nextPoint}`}</p>
+            <p>{`f(c) = ${rootFindOutput[rootFindOutput.length - 1].nextPointOutput}`}</p>
+            <p>{`${selectedApproach === "iterative" ? `Ɛ = ${rootFindOutput[rootFindOutput.length - 1].toleranceValue}`: `n = ${rootFindOutput[rootFindOutput.length - 1].iteration}`}`}</p>
+          </Box>
+        </>
+      }
     </Box>
   )
 }
