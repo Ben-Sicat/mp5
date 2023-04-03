@@ -1,4 +1,4 @@
-import React, { useState }  from 'react'
+import React, { useEffect, useState }  from 'react'
 import {
   Box,
   Typography,
@@ -38,6 +38,7 @@ export const output = {
 
 export const inputStyle = {
   marginTop: "1em",
+  width: "100%",
   marginBottom: "1em",
   marginRight: "1em"
 }
@@ -46,7 +47,24 @@ export const outputText = {
   marginBottom: "1em"
 }
 
-function RootFind({ rootFunctionValueType }) {
+export const formContainer = {
+  display: "flex",
+  width: "100vw",
+  flexDirection: "column",
+  height: "100%",
+  justifyContent: "center",
+  alignSelf: "center",
+  justifySelf: "center",
+  maxWidth: "500px",
+}
+
+export const equationContainer = {
+  alignSelf: "center"
+}
+
+function RootFind() {
+  const [rootFunctionValueType, setRootFunctionValueType] = useState('predefined')
+
   const [rootFindInput, setRootFindInput] = useState({
     userFunction: rootFunctionValueType === "predefined" ? "log(x+1,e)" : "",
     firstGuessPoint: 0,
@@ -59,13 +77,13 @@ function RootFind({ rootFunctionValueType }) {
   const [errMessage, setErrMessage] = useState('');
   const [selectedMethod, setSelectedMethod] = useState('');
   const [selectedApproach, setSelectedApproach] = useState('')
-  
+
+
   async function handleSubmit(e) {
     if (rootFindInput.userFunction === "" || rootFindInput.userFunction === "f(x)") {
       // setErrMessage('Please enter a valid function');
       return;
     }
-    
     try {
       e.preventDefault();
       setIsCalculate(true);
@@ -105,8 +123,25 @@ function RootFind({ rootFunctionValueType }) {
     setSelectedMethod(e.target.value);
   }
 
+  function handleChange(e) {
+    e.preventDefault();
+    setRootFunctionValueType(e.target.value);
+  }
+
   return (
-    <div>
+    <Box sx={formContainer}>
+      <FormControl>
+        <Select
+          id="select"
+          defaultValue='predefined'
+          value={rootFunctionValueType}
+          onChange={handleChange}
+        >
+        <MenuItem value={'predefined'}>Pre-defined function</MenuItem>
+        <MenuItem value={'userdefined'}>Define a function</MenuItem>
+        </Select>
+      </FormControl>
+
       <FormControl>
         <FormLabel id="root-find-approach-label">Approach</FormLabel>
         <RadioGroup
@@ -114,7 +149,7 @@ function RootFind({ rootFunctionValueType }) {
           name="root-find-approach-group"
           value={selectedApproach}
           onChange={handleApproachChange}
-        >
+          >
           <FormControlLabel value="iterative" control={<Radio />} label="Iterative approach" />
           <FormControlLabel value="tolerance" control={<Radio />} label="Tolerance approach (Ɛ)" />
         </RadioGroup>
@@ -127,23 +162,23 @@ function RootFind({ rootFunctionValueType }) {
           name="root-find-method-group"
           value={selectedMethod}
           onChange={handleMethodChange}
-        >
+          >
           <FormControlLabel value="bisection" control={<Radio />} label="Bisection method" />
           <FormControlLabel value="secant" control={<Radio />} label="Secant method" />
         </RadioGroup>
       </FormControl>
 
-       <FormControl sx={inputGroup}>
-
+      <Box sx={equationContainer}>
+        {rootFunctionValueType === "predefined" && <Typography variant="h3"> ln(x + 1)</Typography>}
         {rootFunctionValueType === "userdefined" && <TextField
-          sx={inputStyle}
-          id="equation"
-          label="f(x)"
-          value={rootFindInput.userFunction}
-          onChange={(e) => setRootFindInput(prev => ({ ...prev, userFunction: e.target.value }))} />}
+        sx={inputStyle}
+        id="equation"
+        label="f(x)"
+        value={rootFindInput.userFunction}
+        onChange={(e) => setRootFindInput(prev => ({ ...prev, userFunction: e.target.value }))} />}
+      </Box>
 
-        {rootFunctionValueType === "predefined" && <Typography variant="h4"> ln(x + 1)</Typography>}
-
+       <FormControl sx={inputGroup}>
         <TextField
           sx={inputStyle}
           id="first_guess"
@@ -198,7 +233,7 @@ function RootFind({ rootFunctionValueType }) {
       {/* {!isCalculate ?  : <Button variant="contained" onClick={resetForm}> Restart </Button>} */}
 
         {!isCalculate && <Typography type="error" sx={{ color: "red"}}>{errMessage}</Typography>}
-    </div>
+    </Box>
   )
 }
 
