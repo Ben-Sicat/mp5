@@ -14,7 +14,7 @@ import {
   FormControlLabel
 } from '@mui/material'
 
-import { InlineMath, BlockMath } from 'react-katex';
+import { InlineMath } from 'react-katex';
 import { rootFindSecant, testSecant} from '../../../functions/rootFindSecant';
 import { rootFindBisection } from '../../../functions/rootFindBisection';
 
@@ -27,12 +27,6 @@ export const inputGroup = {
 
 export const outputContainer = {
   display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  alignItems: "center",
-  width: "100%",
-  height: "100vh",
-  maxHeight: "75px",
   marginTop: "1em"
 }
 
@@ -42,17 +36,11 @@ export const output = {
   textAlign: "left"
 }
 
-export const functionInput = {
-  marginTop: "1em",
-  width: "100vw",
-  maxWidth: '500px',
-  // marginBottom: "1em",
-}
-
 export const inputStyle = {
-  marginRight: "1em",
   marginTop: "1em",
+  width: "100%",
   marginBottom: "1em",
+  marginRight: "1em"
 }
 
 export const outputText = {
@@ -63,11 +51,10 @@ export const formContainer = {
   display: "flex",
   width: "100vw",
   flexDirection: "column",
-  height: "100vh",
-  justifyContent: "space-evenly",
+  height: "100%",
+  justifyContent: "center",
   alignSelf: "center",
   justifySelf: "center",
-  maxHeight: "500px",
   maxWidth: "500px",
 }
 
@@ -146,7 +133,6 @@ function RootFind() {
       <FormControl>
         <Select
           id="select"
-          sx={{ marginBottom: "1em" }}
           defaultValue='predefined'
           value={rootFunctionValueType}
           onChange={handleChange}
@@ -183,11 +169,11 @@ function RootFind() {
       </FormControl>
 
       <Box sx={equationContainer}>
-        {rootFunctionValueType === "predefined" ? <Typography variant="h3"> ln(x + 1)</Typography> : <TextField
-        sx={functionInput}
+        {rootFunctionValueType === "predefined" && <Typography variant="h3"> ln(x + 1)</Typography>}
+        {rootFunctionValueType === "userdefined" && <TextField
+        sx={inputStyle}
         id="equation"
         label="f(x)"
-        fullWidth
         value={rootFindInput.userFunction}
         onChange={(e) => setRootFindInput(prev => ({ ...prev, userFunction: e.target.value }))} />}
       </Box>
@@ -209,14 +195,16 @@ function RootFind() {
 
         {selectedApproach === "iterative" &&
           <TextField
+            sx={inputStyle}
             id="equation"
-            label="n"
+            label="Number of iterations"
             value={rootFindInput.numberOfIterations}
             onChange={(e) => setRootFindInput(prev => ({...prev, numberOfIterations: e.target.value}))} />
         }
 
         {selectedApproach === "tolerance" &&
           <TextField
+            sx={inputStyle}
             id="equation"
             label="Ɛ"
             value={rootFindInput.tolerance}
@@ -232,22 +220,19 @@ function RootFind() {
         </>
       }
 
-      <Button  variant="contained" type="submit" onClick={handleSubmit} disableRipple>
-        Calculate
-      </Button>
-
       {
-        isCalculate && selectedMethod === "bisection" &&
-        <>
-          <Box sx={outputContainer}>
-            <p>{`c = ${rootFindOutput[rootFindOutput.length - 1].midpoint}`}</p>
-            <p>{`f(c) = ${rootFindOutput[rootFindOutput.length - 1].midpointOutput}`}</p>
-            <p>{`${selectedApproach === "iterative" ? `Ɛ = ${rootFindOutput[rootFindOutput.length - 1].toleranceValue}`: `n=${rootFindOutput[rootFindOutput.length - 1].iteration}`}`}</p>
-          </Box>
+        isCalculate && selectedMethod === "bisection" && <>
+            {`c = ${rootFindOutput[rootFindOutput.length - 1].midpoint}`}
+            {`f(c) = ${rootFindOutput[rootFindOutput.length - 1].midpointOutput}`}
+            {`${selectedApproach === "iterative" ? `Ɛ = ${rootFindOutput[rootFindOutput.length - 1].toleranceValue}`: `n=${rootFindOutput[rootFindOutput.length - 1].iteration}`}`}
         </>
       }
+<Button variant="contained" type="submit" onClick={handleSubmit}>
+        Calculate
+      </Button>
+      {/* {!isCalculate ?  : <Button variant="contained" onClick={resetForm}> Restart </Button>} */}
 
-      {!isCalculate && <Typography type="error" sx={{ color: "red"}}>{errMessage}</Typography>}
+        {!isCalculate && <Typography type="error" sx={{ color: "red"}}>{errMessage}</Typography>}
     </Box>
   )
 }

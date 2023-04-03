@@ -34,17 +34,14 @@ const headerContainer = {
   height: "100%",
   maxHeight: "125px",
   width: "100vw",
-  // backgroundColor: "#DB3F59",
-  backgroundColor: "#1565c0"
+  backgroundColor: "#DB3F59"
 }
 
 const formContainer = {
   display: "flex",
   flexDirection: "column",
   width: "100%",
-  height: "100vh",
-  alignItems: "center",
-  justifyContent: "center",
+  height: "100%",
   alignSelf: "center",
   justifySelf: "center"
 }
@@ -68,10 +65,13 @@ function Index() {
             </h1>
           </div>
         </Box>
-        <Box sx={formContainer}>
-          <RootFind rootFunctionValueType={itemValue} />
+
+          <Box sx={formContainer}>
+              <FormControl>
+              </FormControl>
+            <RootFind rootFunctionValueType={itemValue} />
+          </Box>
         </Box>
-      </Box>
   )
 }
 
