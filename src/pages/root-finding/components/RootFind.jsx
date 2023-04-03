@@ -25,8 +25,22 @@ export const inputGroup = {
   justifyContent: "space-around",
 }
 
+export const functionInput = {
+  marginTop: "1em",
+  width: "100vw",
+  maxWidth: '500px',
+  marginBottom: "1em",
+}
+
+
 export const outputContainer = {
   display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  alignItems: "center",
+  width: "100%",
+  height: "100vh",
+  maxHeight: "75px",
   marginTop: "1em"
 }
 
@@ -38,7 +52,6 @@ export const output = {
 
 export const inputStyle = {
   marginTop: "1em",
-  width: "100%",
   marginBottom: "1em",
   marginRight: "1em"
 }
@@ -133,6 +146,7 @@ function RootFind() {
       <FormControl>
         <Select
           id="select"
+          sx={{ marginBottom: "1em" }}
           defaultValue='predefined'
           value={rootFunctionValueType}
           onChange={handleChange}
@@ -171,7 +185,7 @@ function RootFind() {
       <Box sx={equationContainer}>
         {rootFunctionValueType === "predefined" && <Typography variant="h3"> ln(x + 1)</Typography>}
         {rootFunctionValueType === "userdefined" && <TextField
-        sx={inputStyle}
+        sx={functionInput}
         id="equation"
         label="f(x)"
         value={rootFindInput.userFunction}
@@ -195,16 +209,14 @@ function RootFind() {
 
         {selectedApproach === "iterative" &&
           <TextField
-            sx={inputStyle}
             id="equation"
-            label="Number of iterations"
+            label="n"
             value={rootFindInput.numberOfIterations}
             onChange={(e) => setRootFindInput(prev => ({...prev, numberOfIterations: e.target.value}))} />
         }
 
         {selectedApproach === "tolerance" &&
           <TextField
-            sx={inputStyle}
             id="equation"
             label="Ɛ"
             value={rootFindInput.tolerance}
