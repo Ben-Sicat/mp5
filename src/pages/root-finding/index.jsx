@@ -34,7 +34,7 @@ const headerContainer = {
   height: "100%",
   maxHeight: "125px",
   width: "100vw",
-  backgroundColor: "#DB3F59"
+  backgroundColor: "#1565c0"
 }
 
 const formContainer = {
