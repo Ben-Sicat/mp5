@@ -2,9 +2,15 @@ import * as math from 'mathjs';
 
 export function rootFindBisection({userFunction, firstGuessPoint, secondGuessPoint, numberOfIterations, tolerance}) {
   
-  if (firstGuessPoint * secondGuessPoint > 0) throw new Error('Interval must have opposite signs');
+  // if (firstGuessPoint * secondGuessPoint > 0) throw new Error('Interval must have opposite signs');
 
   // makes the array one-based index
+  firstGuessPoint = parseInt(firstGuessPoint);
+  secondGuessPoint = parseInt(secondGuessPoint);
+  numberOfIterations = parseInt(numberOfIterations);
+  tolerance = parseFloat(tolerance)
+  if (numberOfIterations === 0) numberOfIterations = 100;
+
   const result = [{}];
   const parsedUserFunction = math.parse(userFunction);
   const executableFunction = parsedUserFunction.compile();
@@ -12,29 +18,29 @@ export function rootFindBisection({userFunction, firstGuessPoint, secondGuessPoi
   let currentIteration = 1;
   
   while (currentIteration <= numberOfIterations) {
-    let midpoint = (firstGuessPoint + secondGuessPoint) / 2;
-    let midpointOutput = executableFunction.evaluate({ x: midpoint });
+    let nextPoint = (firstGuessPoint + secondGuessPoint) / 2;
+    let nextPointOutput = executableFunction.evaluate({ x: nextPoint });
   
     result.push({
         iteration: currentIteration,
         firstPoint: firstGuessPoint,
         secondPoint: secondGuessPoint,
         toleranceValue: secondGuessPoint - firstGuessPoint,
-        midpoint,
-        midpointOutput
+        nextPoint,
+        nextPointOutput
       });
     
-    if (midpointOutput === 0 || (secondGuessPoint - firstGuessPoint) / 2 < tolerance)
+    if (nextPointOutput === 0 || (secondGuessPoint - firstGuessPoint) / 2 < tolerance)
       break;
     
     let firstPointOutput = executableFunction.evaluate({ x: firstGuessPoint });
     
     currentIteration++;
     
-    if (midpointOutput * firstPointOutput > 0)
-      firstGuessPoint = midpoint;
+    if (nextPointOutput * firstPointOutput > 0)
+      firstGuessPoint = nextPoint;
     else
-      secondGuessPoint = midpoint;
+      secondGuessPoint = nextPoint;
   }
   
   return result;
