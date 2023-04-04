@@ -5,9 +5,9 @@ export function rootFindBisection({userFunction, firstGuessPoint, secondGuessPoi
   // if (firstGuessPoint * secondGuessPoint > 0) throw new Error('Interval must have opposite signs');
 
   // makes the array one-based index
-  firstGuessPoint = parseInt(firstGuessPoint);
-  secondGuessPoint = parseInt(secondGuessPoint);
-  numberOfIterations = parseInt(numberOfIterations);
+  firstGuessPoint = parseFloat(firstGuessPoint);
+  secondGuessPoint = parseFloat(secondGuessPoint);
+  numberOfIterations = parseFloat(numberOfIterations);
   tolerance = parseFloat(tolerance)
   if (numberOfIterations === 0) numberOfIterations = 100;
 

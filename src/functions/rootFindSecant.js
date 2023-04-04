@@ -5,9 +5,9 @@ import next from 'next';
 export function rootFindSecant({ userFunction, firstGuessPoint, secondGuessPoint, numberOfIterations, tolerance }) {
   // ? when user selected iterative approach, show c, f(c), Ɛ = | last iteration - previous iteration |
   // ? when user selected tolerance approach, c, f(c), number of iterations
-  firstGuessPoint = parseInt(firstGuessPoint);
-  secondGuessPoint = parseInt(secondGuessPoint);
-  numberOfIterations = parseInt(numberOfIterations);
+  firstGuessPoint = parseFloat(firstGuessPoint);
+  secondGuessPoint = parseFloat(secondGuessPoint);
+  numberOfIterations = parseFloat(numberOfIterations);
   tolerance = parseFloat(tolerance)
   if (numberOfIterations === 0) numberOfIterations = 100;
 
