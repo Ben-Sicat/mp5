@@ -190,7 +190,7 @@ function ErrorPropagation() {
             </Box>
           </Box>
 
-
+{/*  */}
         </>}
 
         <Typography sx={{ marginTop: "1em"}}> <a href="https://mathjs.org/docs/expressions/parsing.html" target="_blank"> Syntax guide </a></Typography>

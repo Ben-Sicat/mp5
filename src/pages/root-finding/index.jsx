@@ -14,7 +14,7 @@ import { testBisection } from '../../functions/rootFindBisection'
 
 const cantarell = Cantarell({ subsets: ["latin"], weight: "700"})
 
-const rootContainer = {
+export const rootContainer = {
   display: 'flex',
   width: '100%',
   height: '100vh',
@@ -37,7 +37,7 @@ const headerContainer = {
   backgroundColor: "#1565c0"
 }
 
-const formContainer = {
+export const formContainer = {
   display: "flex",
   flexDirection: "column",
   width: "100%",
