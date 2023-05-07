@@ -67,6 +67,20 @@ function CoordinatesInput() {
       ]);
       return setXValue(11);
     }
+    if (option == 'defined') {
+      setCoordinates([
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+      ]);
+    }
     // setCoordinates(Array(numberOfPoints).fill([null, null]));
     setXValue(0);
   }, [numberOfPoints, option]);
@@ -85,7 +99,7 @@ function CoordinatesInput() {
       const value = parseInt(event.target.value);
       setNumberOfPoints(value);
       if (value >= 10) {
-        setCoordinates(Array(value).fill([_, _]));
+        setCoordinates(Array(value).fill([null, null]));
       }
     } catch (e) {
       return;
@@ -114,6 +128,21 @@ function CoordinatesInput() {
     setIsInterpolated(false);
   }
 
+  function lagrange(x, y, xi) {
+    let result = 0;
+    const n = x.length;
+    for (let i = 0; i < n; i++) {
+      let term = y[i];
+      for (let j = 0; j < n; j++) {
+        if (j !== i) {
+          term *= (xi - x[j]) / (x[i] - x[j]);
+        }
+      }
+      result += term;
+    }
+    return result;
+  }
+
   function handleInterpolate() {
     setIsInterpolated(true);
     const x = coordinates.map(([xi, _]) => xi);
@@ -128,20 +157,6 @@ function CoordinatesInput() {
     console.log(lagrange(x, y, xi));
 
     console.log(interpolatedValue);
-  }
-  function lagrange(x, y, xi) {
-    let result = 0;
-    const n = x.length;
-    for (let i = 0; i < n; i++) {
-      let term = y[i];
-      for (let j = 0; j < n; j++) {
-        if (j !== i) {
-          term *= (xi - x[j]) / (x[i] - x[j]);
-        }
-      }
-      result += term;
-    }
-    return result;
   }
 
   return (
@@ -180,14 +195,14 @@ function CoordinatesInput() {
             <TextField
               label={`X${index + 1}`}
               disabled={option == 'predefined'}
-              type="input"
+              type="number"
               value={coordinate[0] || ''}
               onChange={handleCoordinateChange(index, 0)}
             />
             <TextField
               label={`Y${index + 1}`}
               disabled={option == 'predefined'}
-              type="input"
+              type="number"
               value={coordinate[1] || ''}
               onChange={handleCoordinateChange(index, 1)}
             />
