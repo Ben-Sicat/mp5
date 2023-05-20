@@ -17,7 +17,6 @@ import {
   Select,
   RadioGroup,
 } from '@mui/material';
-import { Main } from 'next/document';
 
 const FormContainer = styled('div')({
   display: 'flex',
