@@ -11,6 +11,7 @@ export const MainBox = styled('div')({
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
+  color: 'black',
 });
 
 const RenderBox = styled('div')({
