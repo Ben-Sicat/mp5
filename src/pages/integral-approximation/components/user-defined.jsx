@@ -66,23 +66,13 @@ function UserDefined() {
     event.preventDefault();
     if (method == 'simpson') {
       setResult(
-        calcSimpson(
-          parseFloat(math.evaluate(a)),
-          parseFloat(math.evaluate(b)),
-          parseInt(n),
-          expression
-        )
+        calcSimpson(parseFloat(a), parseFloat(b), parseInt(n), expression)
       );
       return;
     }
 
     setResult(
-      calcTrapezoid(
-        parseFloat(math.evaluate(a)),
-        parseFloat(math.evaluate(b)),
-        parseInt(n),
-        expression
-      )
+      calcTrapezoid(parseFloat(a), parseFloat(b), parseInt(n), expression)
     );
   }
 
