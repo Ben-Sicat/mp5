@@ -11,6 +11,7 @@ import {
 import round from '../../functions/Round';
 import { InlineMath, BlockMath } from 'react-katex';
 import { number } from 'mathjs';
+import DrawerMenu from '../../../components/MachineProblemDrawer';
 
 const rootContainer = {
   padding: '2em',
@@ -160,103 +161,126 @@ function CoordinatesInput() {
   }
 
   return (
-    <Box sx={rootContainer}>
-      <Box sx={{ marginBottom: '1em' }}>
-        <FormControl fullWidth>
-          <Select
-            id="select"
-            defaultValue="predefined"
-            value={option}
-            onChange={handleOptionChange}
-          >
-            <MenuItem value={'predefined'}>Pre-defined points (forex)</MenuItem>
-            <MenuItem value={'defined'}>Define a set of points</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
+    <>
+      <DrawerMenu />
+      <Box sx={rootContainer}>
+        <Box sx={{ marginBottom: '1em' }}>
+          <FormControl fullWidth>
+            <Select
+              id="select"
+              defaultValue="predefined"
+              value={option}
+              onChange={handleOptionChange}
+            >
+              <MenuItem value={'predefined'}>
+                Pre-defined points (forex)
+              </MenuItem>
+              <MenuItem value={'defined'}>Define a set of points</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
 
-      {option == 'predefined' && (
-        <Typography variant="h5">
-          {' '}
-          USD to EUR (May 2022 to February 2023){' '}
-        </Typography>
-      )}
+        {option == 'predefined' && (
+          <Typography variant="h5">
+            {' '}
+            USD to EUR (May 2022 to February 2023){' '}
+          </Typography>
+        )}
 
-      <Box>
-        {coordinates.map((coordinate, index) => (
+        <Box>
+          {coordinates.map((coordinate, index) => (
+            <Box
+              sx={
+                option === 'predefined'
+                  ? coordinatesContainer
+                  : definedCoordinatesContainer
+              }
+              key={index}
+            >
+              <TextField
+                label={`X${index + 1}`}
+                disabled={option == 'predefined'}
+                type="number"
+                value={coordinate[0] || ''}
+                onChange={handleCoordinateChange(index, 0)}
+              />
+              <TextField
+                label={`Y${index + 1}`}
+                disabled={option == 'predefined'}
+                type="number"
+                value={coordinate[1] || ''}
+                onChange={handleCoordinateChange(index, 1)}
+              />
+              {option === 'predefined' && (
+                <Typography sx={{ fontWeight: 'bold' }}>
+                  {' '}
+                  {`Month ${coordinates[index][0]} price: ${coordinates[index][1]}`}
+                </Typography>
+              )}
+            </Box>
+          ))}
+
           <Box
             sx={
               option === 'predefined'
                 ? coordinatesContainer
                 : definedCoordinatesContainer
             }
-            key={index}
           >
             <TextField
-              label={`X${index + 1}`}
+              label={`X`}
+              sx={{ marginBottom: '1em' }}
               disabled={option == 'predefined'}
-              type="number"
-              value={coordinate[0] || ''}
-              onChange={handleCoordinateChange(index, 0)}
+              type="input"
+              value={xValue}
+              onChange={handleXValueChange}
             />
             <TextField
-              label={`Y${index + 1}`}
+              label={`n`}
+              sx={{ marginBottom: '1em' }}
               disabled={option == 'predefined'}
-              type="number"
-              value={coordinate[1] || ''}
-              onChange={handleCoordinateChange(index, 1)}
+              type="input"
+              value={numberOfPoints}
+              onChange={onNumberOfPointsChange}
             />
             {option === 'predefined' && (
-              <Typography sx={{ fontWeight: 'bold' }}>
-                {' '}
-                {`Month ${coordinates[index][0]} price: ${coordinates[index][1]}`}
-              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Typography sx={{ fontWeight: 'bold' }}>
+                  {isInterpolated && `Analyzed Month ${xValue} price trend: `}
+                </Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>
+                  {isInterpolated &&
+                    `P${numberOfPoints}(${xValue}) = ${round(
+                      interpolatedValue,
+                      3
+                    )} (${
+                      round(interpolatedValue, 3) > 0 ? 'Uptrend' : 'Downtrend'
+                    })`}
+                </Typography>
+              </Box>
             )}
           </Box>
-        ))}
 
-        <Box
-          sx={
-            option === 'predefined'
-              ? coordinatesContainer
-              : definedCoordinatesContainer
-          }
-        >
-          <TextField
-            label={`X`}
-            sx={{ marginBottom: '1em' }}
-            disabled={option == 'predefined'}
-            type="input"
-            value={xValue}
-            onChange={handleXValueChange}
-          />
-          <TextField
-            label={`n`}
-            sx={{ marginBottom: '1em' }}
-            disabled={option == 'predefined'}
-            type="input"
-            value={numberOfPoints}
-            onChange={onNumberOfPointsChange}
-          />
-          {option === 'predefined' && (
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 'bold' }}>
-                {isInterpolated && `Analyzed Month ${xValue} price trend: `}
-              </Typography>
+          {option === 'defined' && (
+            <Box
+              sx={{
+                padding: '1em',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
               <Typography sx={{ fontWeight: 'bold' }}>
                 {isInterpolated &&
                   `P${numberOfPoints}(${xValue}) = ${round(
                     interpolatedValue,
                     3
-                  )} (${
-                    round(interpolatedValue, 3) > 0 ? 'Uptrend' : 'Downtrend'
-                  })`}
+                  )}`}
               </Typography>
             </Box>
           )}
-        </Box>
 
-        {option === 'defined' && (
           <Box
             sx={{
               padding: '1em',
@@ -266,37 +290,19 @@ function CoordinatesInput() {
               alignItems: 'center',
             }}
           >
-            <Typography sx={{ fontWeight: 'bold' }}>
-              {isInterpolated &&
-                `P${numberOfPoints}(${xValue}) = ${round(
-                  interpolatedValue,
-                  3
-                )}`}
-            </Typography>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ alignSelf: 'center', justifySelf: 'center' }}
+              color="primary"
+              onClick={handleInterpolate}
+            >
+              Interpolate
+            </Button>
           </Box>
-        )}
-
-        <Box
-          sx={{
-            padding: '1em',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{ alignSelf: 'center', justifySelf: 'center' }}
-            color="primary"
-            onClick={handleInterpolate}
-          >
-            Interpolate
-          </Button>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 }
 

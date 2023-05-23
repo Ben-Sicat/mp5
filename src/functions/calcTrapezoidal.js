@@ -1,5 +1,4 @@
 import * as math from 'mathjs';
-import { EXPORT_MARKER } from 'next/dist/shared/lib/constants';
 
 const deltaX = (x1, x2, n1) => {
   return (x2 - x1) / n1;
@@ -11,14 +10,24 @@ const trapezoidCalc = (a, b, n, expression) => {
   let pointsStack = [];
   let sum = 0;
 
-  for (let i = 0; i < n; i++) {
+  for (let i = 1; i < n; i++) {
     pointsStack.push(`[${a + i * delta}, ${a + (i + 1) + delta}]`);
 
-    let isValidExpression =
-      Number.isFinite(numeratorFn.evaluate({ x: a + i * delta })) ||
-      Number.isNaN(numeratorFn.evaluate({ x: a + i * delta }));
+    if (pointsStack.length > 5) {
+      return `Error - Function is divergent in the following interval(s): ${pointsStack.join(
+        ', '
+      )}`;
+    }
 
-    if (!isValidExpression) {
+    if (!Number.isFinite(math.evaluate(expression, { x: a + i * delta }))) {
+      console.log('infinity issue');
+      return `Error - Function is divergent in the following interval(s): ${pointsStack.join(
+        ', '
+      )}`;
+    }
+
+    if (math.isNaN(numeratorFn.evaluate({ x: a + i * delta }))) {
+      console.log('NaN issue');
       return `Error - Function is divergent in the following interval(s): ${pointsStack.join(
         ', '
       )}`;

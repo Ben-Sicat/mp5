@@ -3,6 +3,7 @@ import PreDefined from './components/predefined';
 import UserDefined from './components/user-defined';
 import { styled } from '@mui/system';
 import { Typography, Box, FormControl, MenuItem, Select } from '@mui/material';
+import DrawerMenu from '../../../components/MachineProblemDrawer';
 
 export const MainBox = styled('div')({
   display: 'flex',
@@ -30,21 +31,24 @@ function Index() {
   }
 
   return (
-    <MainBox>
-      <FormControl fullWidth sx={{ maxWidth: '400px', marginBottom: '1em' }}>
-        <Select
-          id="select"
-          defaultValue="pre-defined"
-          value={option}
-          onChange={onOptionChange}
-        >
-          <MenuItem value={'pre-defined'}>Pre-defined function</MenuItem>
-          <MenuItem value={'user-defined'}>Define a function</MenuItem>
-        </Select>
-      </FormControl>
-      {option == 'pre-defined' && <PreDefined />}
-      {option == 'user-defined' && <UserDefined />}
-    </MainBox>
+    <>
+      <DrawerMenu />
+      <MainBox>
+        <FormControl fullWidth sx={{ maxWidth: '400px', marginBottom: '1em' }}>
+          <Select
+            id="select"
+            defaultValue="pre-defined"
+            value={option}
+            onChange={onOptionChange}
+          >
+            <MenuItem value={'pre-defined'}>Pre-defined function</MenuItem>
+            <MenuItem value={'user-defined'}>Define a function</MenuItem>
+          </Select>
+        </FormControl>
+        {option == 'pre-defined' && <PreDefined />}
+        {option == 'user-defined' && <UserDefined />}
+      </MainBox>
+    </>
   );
 }
 

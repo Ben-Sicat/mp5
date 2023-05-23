@@ -19,7 +19,8 @@
     "**/*.ts",
     "**/*.tsx",
     "src/pages/integral-approximation/components/predefined.jsx",
-    "src/pages/integral-approximation/index.jsx"
+    "src/pages/integral-approximation/index.jsx",
+    "components/MachineProblemDrawer.jsx"
   ],
   "exclude": ["node_modules"]
 }

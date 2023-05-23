@@ -61,7 +61,7 @@ function UserDefined() {
   const [result, setResult] = useState('');
 
   function handleSubmit(event) {
-    // setExpression(`(${numeratorFn})/${denominatorFn}`);
+    setExpression(`(${numeratorFn})/${denominatorFn}`);
     // setExpression(`(${numeratorFn})/${0}`);
     event.preventDefault();
     if (method == 'simpson') {
@@ -134,12 +134,20 @@ function UserDefined() {
               onChange={e => setN(e.target.value)}
             />
           </InputFieldGroup>
-          <TextField
-            label="f(x)"
-            type="text"
-            value={expression}
-            onChange={e => setExpression(e.target.value)}
-          />
+          <InputFieldGroup>
+            <TextField
+              label="f(x)"
+              type="text"
+              value={numeratorFn}
+              onChange={e => setNumeratorFn(e.target.value)}
+            />
+            <TextField
+              label="g(x)"
+              type="text"
+              value={denominatorFn}
+              onChange={e => setDenominatorFn(e.target.value)}
+            />
+          </InputFieldGroup>
           <SubmitButton variant="contained" type="submit">
             Submit
           </SubmitButton>
