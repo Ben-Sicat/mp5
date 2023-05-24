@@ -79,7 +79,7 @@ function UserDefined() {
       });
     }
 
-    if (root.message) {
+    if (root) {
       setResult(root.message);
       return;
     }
