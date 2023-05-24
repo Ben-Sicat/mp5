@@ -13,13 +13,7 @@ const trapezoidCalc = (a, b, n, expression) => {
   for (let i = 1; i < n; i++) {
     pointsStack.push(`[${a + i * delta}, ${a + (i + 1) + delta}]`);
 
-    if (pointsStack.length > 5) {
-      return `Error - Function is divergent in the following interval(s): ${pointsStack.join(
-        ', '
-      )}`;
-    }
-
-    if (!Number.isFinite(math.evaluate(expression, { x: a + i * delta }))) {
+    if (!Number.isFinite(numeratorFn.evaluate({ x: a + i * delta }))) {
       console.log('infinity issue');
       return `Error - Function is divergent in the following interval(s): ${pointsStack.join(
         ', '

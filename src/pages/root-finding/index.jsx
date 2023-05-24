@@ -44,8 +44,8 @@ function Index() {
   const [itemValue, setItemValue] = useState('predefined');
 
   useEffect(() => {
-    console.log('secant method', testSecant());
-    console.log('bisection method', testBisection());
+    // console.log('secant method', testSecant());
+    // console.log('bisection method', testBisection());
   }, [itemValue]);
 
   return (

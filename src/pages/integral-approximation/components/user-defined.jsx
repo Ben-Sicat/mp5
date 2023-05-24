@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { MainBox } from '..';
 import calcSimpson from '../../../functions/calcSimpson';
 import calcTrapezoid from '../../../functions/calcTrapezoidal';
+import rootFindBisection from '../../../functions/rootFindBisection';
 import {
   Typography,
   Button,
@@ -61,9 +62,30 @@ function UserDefined() {
   const [result, setResult] = useState('');
 
   function handleSubmit(event) {
-    setExpression(`(${numeratorFn})/${denominatorFn}`);
-    // setExpression(`(${numeratorFn})/${0}`);
+    //  userFunction,
+    // firstGuessPoint,
+    // secondGuessPoint,
+    // tolerance,
+    // numberOfIterations = 0,
     event.preventDefault();
+
+    let root;
+    if (denominatorFn !== '1') {
+      root = rootFindBisection({
+        userFunction: denominatorFn,
+        firstGuessPoint: parseFloat(a),
+        secondGuessPoint: parseFloat(b),
+        tolerance: 0.0000000001,
+      });
+    }
+
+    if (root) {
+      setResult(root);
+      return;
+    }
+
+    setExpression(`(${numeratorFn})/${denominatorFn}`);
+
     if (method == 'simpson') {
       setResult(
         calcSimpson(parseFloat(a), parseFloat(b), parseInt(n), expression)
@@ -71,7 +93,7 @@ function UserDefined() {
       return;
     }
 
-    setResult(
+    return setResult(
       calcTrapezoid(parseFloat(a), parseFloat(b), parseInt(n), expression)
     );
   }
