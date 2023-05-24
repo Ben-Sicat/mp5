@@ -79,8 +79,8 @@ function UserDefined() {
       });
     }
 
-    if (root) {
-      setResult(root);
+    if (root.message) {
+      setResult(root.message);
       return;
     }
 

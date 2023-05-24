@@ -22,7 +22,7 @@ export default function rootFindBisection({
 
   let currentIteration = 1;
 
-  while (currentIteration <= numberOfIterations) {
+  while (currentIteration <= parseInt(numberOfIterations)) {
     let nextPoint = (firstGuessPoint + secondGuessPoint) / 2;
     let nextPointOutput = executableFunction.evaluate({ x: nextPoint });
 
@@ -39,8 +39,10 @@ export default function rootFindBisection({
       nextPointOutput === 0 ||
       (secondGuessPoint - firstGuessPoint) / 2 < tolerance
     ) {
-      // break;
-      return `The function has a root in ${nextPointOutput}, non-integrable`;
+      return {
+        message: `The function has a root in ${nextPointOutput} in interval [${firstGuessPoint}, ${secondGuessPoint}], non-integrable`,
+        stack: result,
+      };
     }
 
     let firstPointOutput = executableFunction.evaluate({ x: firstGuessPoint });
@@ -50,9 +52,10 @@ export default function rootFindBisection({
     if (nextPointOutput * firstPointOutput > 0) firstGuessPoint = nextPoint;
     else secondGuessPoint = nextPoint;
   }
+  console.log(result);
 
-  // return result;
-  return `The function has a root in ${result.nextPointOutput}, non-integrable`;
+  return result;
+  // return `The function has a root in ${result.nextPointOutput} in interval [${result.firstPoint}, ${result.secondPoint}], non-integrable`;
 }
 
 // const exampleBisectionInput = {
