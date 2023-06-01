@@ -60,7 +60,7 @@ function Index() {
                   onChange={handleChange}
                 >
                   <MenuItem value={'approximation'}>
-                    Error Propagated Approximation
+                    Error Approximation
                   </MenuItem>
                   <MenuItem value={'taylor'}>{"Taylor's Polynomial"}</MenuItem>
                 </Select>
