@@ -21,45 +21,36 @@ import {
 const FormContainer = styled('div')({
   display: 'flex',
   flexDirection: 'column',
-  width: '100vw',
-  gap: '1rem',
-  maxWidth: '400px',
-  margin: '0 auto',
-});
-
-const InputFieldGroup = styled('div')({
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  width: '100vw',
-  gap: '1rem',
-  maxWidth: '400px',
-  margin: '0 auto',
+  alignItems: 'center',
+  gap: '2rem',
 });
 
 const SubmitButton = styled(Button)({
-  backgroundColor: '#2196f3',
+  backgroundColor: '#7E57C2',
   color: '#fff',
   '&:hover': {
-    backgroundColor: '#1976d2',
+    backgroundColor: '#512DA8',
   },
 });
 
 const ResultText = styled('p')({
   textAlign: 'center',
+  fontSize: '1.2rem',
+  fontWeight: 'bold',
+  color: '#7E57C2',
 });
 
 function PreDefined() {
   const [a, setA] = useState('');
   const [b, setB] = useState('');
   const [n, setN] = useState('');
-  const [expression, setExpression] = useState('log(x+1)');
+  const [expression, setExpression] = useState('tanh(x)');
   const [method, setMethod] = useState('trapezoid');
   const [result, setResult] = useState('');
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (method == 'simpson') {
+    if (method === 'simpson') {
       setResult(
         calcSimpson(parseFloat(a), parseFloat(b), parseInt(n), expression)
       );
@@ -105,34 +96,37 @@ function PreDefined() {
               />
             </RadioGroup>
           </FormControl>
-          <InputFieldGroup>
-            <TextField
-              label="a"
-              type="text"
-              value={a}
-              onChange={e => setA(e.target.value)}
+          <TextField
+            label = "tanh(x)"
+            type= "muted"
+            variant = "filled"
             />
-            <TextField
-              label="b"
-              type="text"
-              value={b}
-              onChange={e => setB(e.target.value)}
-            />
-            <TextField
-              label="n"
-              type="text"
-              value={n}
-              onChange={e => setN(e.target.value)}
-            />
-          </InputFieldGroup>
-          <SubmitButton
-            // onClick={handleSubmit}
-            variant="contained"
-            type="submit"
-          >
+
+          <TextField
+            label="a"
+            type="text"
+            value={a}
+            onChange={e => setA(e.target.value)}
+            variant="outlined"
+          />
+          <TextField
+            label="b"
+            type="text"
+            value={b}
+            onChange={e => setB(e.target.value)}
+            variant="outlined"
+          />
+          <TextField
+            label="n"
+            type="text"
+            value={n}
+            onChange={e => setN(e.target.value)}
+            variant="outlined"
+          />
+          <SubmitButton variant="contained" type="submit">
             Submit
           </SubmitButton>
-          <ResultText>Result: {result}</ResultText>
+          {result && <ResultText>Result: {result}</ResultText>}
         </FormContainer>
       </form>
     </div>

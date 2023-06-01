@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import {
   Box,
   Modal,
@@ -11,83 +11,74 @@ import {
   TextField,
   Button,
   FormGroup
-} from '@mui/material'
-import * as math from "mathjs";
+} from '@mui/material';
+import * as math from 'mathjs';
 
-// strategy pattern
-// import { context } from '../../../../functions/context';
-import { calculateTrueError, calculateRelativeError } from '../../../functions/calculateApproximation';
+import {
+  calculateTrueError,
+  calculateRelativeError
+} from '../../../functions/calculateApproximation';
 
 import round from '../../../functions/Round';
-import chop from '../../../functions/Chop'
-import { typeOf } from 'mathjs';
-
+import chop from '../../../functions/Chop';
 
 const containerStyle = {
   display: 'flex',
   flexDirection: 'column',
-  // alignItems: 'center',
-}
+  alignItems: 'center',
+};
 
 const formStyle = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
-  height: "100%"
-  // alignItems: 'center',
-}
+  height: '100%',
+};
 
-export const inputGroup = {
+const inputGroup = {
   display: 'flex',
-  flexDirection: 'row',
-  alignItems: "center",
-  justifyContent: "space-around",
-}
+  flexDirection: 'column',
+  alignItems: 'center',
+};
 
-export const outputContainer = {
-  display: "flex",
-  marginTop: "1em"
-}
+const outputContainer = {
+  display: 'flex',
+  marginTop: '1em',
+};
 
-export const output = {
-  display: "flex",
-  flexDirection: "column",
-  textAlign: "left"
-}
+const output = {
+  display: 'flex',
+  flexDirection: 'column',
+  textAlign: 'left',
+};
 
-export const inputStyle = {
-  marginTop: "1em",
-  marginBottom: "1em",
-  marginRight: "1em"
-}
+const inputStyle = {
+  marginTop: '1em',
+  marginBottom: '1em',
+  width: '15em',
+};
 
-export const outputText = {
-  marginBottom: "1em"
-}
+const outputText = {
+  marginBottom: '1em',
+};
 
 function ErrorPropagation() {
-  // user input
-  const [trueValue, setTrueValue] = useState("0");
+  const [trueValue, setTrueValue] = useState('0');
   const [decimalPlace, setDecimalPlace] = useState(0);
   const [approximateValue, setApproximateValue] = useState({
-    initial: "0",
-    chopped: "0",
-    rounded: "0"
+    initial: '0',
+    chopped: '0',
+    rounded: '0',
   });
   const [approximationError, setApproximationError] = useState({
-    choppedTrueError: "0",
-    choppedRelativeError: "0",
-    roundedTrueError: "0",
-    roundedRelativeError: "0"
-  })
-  // approximate values
-  
+    choppedTrueError: '0',
+    choppedRelativeError: '0',
+    roundedTrueError: '0',
+    roundedRelativeError: '0',
+  });
+
   const [isCalculate, setIsCalculate] = useState(false);
 
-  // useEffect(() => {
-  
-  // },[trueValue])
-  
   function handleTrueValueChange(e) {
     e.preventDefault();
     setTrueValue(e.target.value);
@@ -96,10 +87,10 @@ function ErrorPropagation() {
   function handleApproximateValueChange(e) {
     e.preventDefault();
 
-    setApproximateValue(prev => ({
+    setApproximateValue((prev) => ({
       ...prev,
       initial: e.target.value,
-    }))
+    }));
   }
 
   function handleChangeDecimalPlace(e) {
@@ -111,93 +102,145 @@ function ErrorPropagation() {
     e.preventDefault();
     setIsCalculate(true);
 
-
-    // setApproximateValue(prev => ({ ...prev, rounded: round(approximateValue.initial, decimalPlace)}))
-    setApproximateValue(prev => ({
+    setApproximateValue((prev) => ({
       ...prev,
       chopped: chop(math.evaluate(approximateValue.initial), decimalPlace),
-      rounded: round(math.evaluate(approximateValue.initial), decimalPlace)
-    }))
-
-    // return { approximationError, approximateValue};
+      rounded: round(math.evaluate(approximateValue.initial), decimalPlace),
+    }));
   }
 
   function resetForm() {
     setIsCalculate(false);
-    setTrueValue(0)
+    setTrueValue('0');
     setApproximateValue({
-      initial: 0,
-      chopped: 0,
-      rounded: 0
-    })
+      initial: '0',
+      chopped: '0',
+      rounded: '0',
+    });
     setApproximationError({
-      choppedTrueError: 0,
-      choppedRelativeError: 0,
-      roundedTrueError: 0,
-      roundedRelativeError: 0
-    })
+      choppedTrueError: '0',
+      choppedRelativeError: '0',
+      roundedTrueError: '0',
+      roundedRelativeError: '0',
+    });
     setDecimalPlace(0);
   }
 
-
-
   return (
     <Box sx={containerStyle}>
-      <FormGroup sx={formStyle} >
+      <FormGroup sx={formStyle}>
         <FormControl sx={inputGroup}>
           <TextField
             sx={inputStyle}
             id="true-value"
             label="Enter true value"
             value={trueValue}
-            onChange={handleTrueValueChange} />
+            onChange={handleTrueValueChange}
+          />
 
           <TextField
             sx={inputStyle}
             id="approximate-value"
             label="Enter approximate value"
             value={approximateValue.initial}
-            onChange={handleApproximateValueChange} />
+            onChange={handleApproximateValueChange}
+          />
 
           <TextField
+            sx={inputStyle}
             id="decimal-place"
             label="Decimal Places"
             value={decimalPlace}
-
-            onChange={handleChangeDecimalPlace} />
+            onChange={handleChangeDecimalPlace}
+          />
         </FormControl>
 
-          {!isCalculate ? <Button variant="contained" type="submit" onClick={handleSubmit}>
+        {!isCalculate ? (
+          <Button
+            variant="contained"
+            type="submit"
+            onClick={handleSubmit}
+            sx={{ color: 'white', backgroundColor: 'green' }}
+          >
             Calculate
-          </Button> : <Button variant="contained" onClick={resetForm}> Restart </Button>}
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            onClick={resetForm}
+            sx={{ color: 'white', backgroundColor: 'red' }}
+          >
+            Restart
+          </Button>
+        )}
 
-        {isCalculate && <>
-          <Typography sx={{ marginTop: "1em" }}> {`True Value: ${math.evaluate(trueValue)}`}</Typography>
+        {isCalculate && (
+          <>
+            <Typography sx={{ marginTop: '1em' }}>
+              {`True Value: ${math.evaluate(trueValue)}`}
+            </Typography>
 
-          <Box sx={outputContainer}>
-            <Box sx={output}>
-              <Typography sx={outputText}>{`Chopped Value: ${approximateValue.chopped}`}</Typography>
-              <Typography sx={outputText}>{`True Error (chop): ${calculateTrueError(math.evaluate(trueValue), approximateValue.chopped)}`}</Typography>
-              <Typography sx={outputText}>{`Relative Error (chop): ${calculateRelativeError(math.evaluate(trueValue), approximateValue.chopped)} %`}</Typography>
+            <Box sx={outputContainer}>
+              <Box sx={output}>
+                <Typography sx={outputText}>
+                  {`Chopped Value: ${approximateValue.chopped}`}
+                </Typography>
+                <Typography sx={outputText}>
+                  {`True Error (chop): ${calculateTrueError(
+                    math.evaluate(trueValue),
+                    approximateValue.chopped
+                  )}`}
+                </Typography>
+                <Typography sx={outputText}>
+                  {`Relative Error (chop): ${calculateRelativeError(
+                    math.evaluate(trueValue),
+                    approximateValue.chopped
+                  )} %`}
+                </Typography>
+              </Box>
+
+              <Box sx={output}>
+                <Typography sx={outputText}>
+                  {`Rounded Value: ${approximateValue.rounded}`}
+                </Typography>
+
+                <Typography sx={outputText}>
+                  {`True Error (round): ${calculateTrueError(
+                    math.evaluate(trueValue),
+                    approximateValue.rounded
+                  )}`}
+                </Typography>
+
+                <Typography sx={outputText}>
+                  {`Relative Error (round): ${calculateRelativeError(
+                    math.evaluate(trueValue),
+                    approximateValue.rounded
+                  )} %`}
+                </Typography>
+              </Box>
             </Box>
+          </>
+        )}
 
-            <Box sx={output}>
-              <Typography sx={outputText}>{`Rounded Value: ${approximateValue.rounded}`}</Typography>
-
-              <Typography sx={outputText}>{`True Error (round): ${calculateTrueError(math.evaluate(trueValue), approximateValue.rounded)}`}</Typography>
-
-              <Typography sx={outputText}>{`Relative Error (round): ${calculateRelativeError(math.evaluate(trueValue), approximateValue.rounded)} %`}</Typography>
-            </Box>
-          </Box>
-
-{/*  */}
-        </>}
-
-        <Typography sx={{ marginTop: "1em"}}> <a href="https://mathjs.org/docs/expressions/parsing.html" target="_blank"> Syntax guide </a></Typography>
-        <Typography sx={{ marginTop: "0.5em"}}> <a href="https://mathjs.org/docs/reference/functions.html" target="_blank"> Functions </a></Typography>
+        <Typography sx={{ marginTop: '1em' }}>
+          <a
+            href="https://mathjs.org/docs/expressions/parsing.html"
+            target="_blank"
+          >
+            Syntax guide
+          </a>
+        </Typography>
+        <Typography sx={{ marginTop: '0.5em' }}>
+          <a
+            href="https://mathjs.org/docs/reference/functions.html"
+            target="_blank"
+          >
+            Functions
+          </a>
+        </Typography>
       </FormGroup>
     </Box>
-  )
+  );
 }
 
 export default ErrorPropagation;

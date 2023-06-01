@@ -1,64 +1,55 @@
-import { useState } from 'react'
-import { createPortal } from 'react-dom';
+import React, { useState } from 'react';
 import {
   Typography,
   TextField,
   Button,
   Box,
-  FormGroup
-} from '@mui/material'
-
-import 'katex/dist/katex.min.css';
+  FormControl,
+  FormGroup,
+} from '@mui/material';
 import { InlineMath, BlockMath } from 'react-katex';
-
-import getTaylor from '../../../functions/getTaylor';
-import calculateTaylor from '../../../functions/calculateTaylor';
-import { outputText, output, inputGroup, inputStyle} from './ErrorPropagation';
-import { calculateTrueError, calculateRelativeError} from '../../../functions/calculateApproximation';
-
-const outputContainer = {
-  marginTop: "1em",
-  marginBottom: "0.5em",
-  display: "flex",
-  justifyContent: "space-around"
-}
-
-const errorOutputContainer = {
-  marginTop: "1em",
-  marginBottom: "0.5em",
-  display: "flex",
-  justifyContent: "space-between"
-}
+import 'katex/dist/katex.min.css';
+import {
+  outputText,
+  output,
+  inputGroup,
+  inputStyle,
+} from './ErrorPropagation';
+import {
+  calculateTrueError,
+  calculateRelativeError,
+} from '../../../functions/calculateApproximation';
 
 const style = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  width: "100%",
-  maxWidth: "700px",
-  flexWrap: "wrap"
-}
+  width: '100%',
+  maxWidth: '700px',
+  gap: '1rem',
+};
 
 const mathContainer = {
-  display: "flex",
-  width: "100%",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center"
-}
+  display: 'flex',
+  width: '100%',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
 
 const formStyle = {
-  width: "100%",
-  maxWidth: "700px"
-}
+  width: '100%',
+  maxWidth: '700px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1rem',
+};
 
 function TaylorPolynomial() {
-  // input values
   const [degree, setDegree] = useState(0);
   const [taylorResult, setTaylorResult] = useState({});
   const [taylorValue, setTaylorValue] = useState(0);
   const [decimalPlace, setDecimalPlace] = useState(0);
-
   const [taylorEquation, setTaylorEquation] = useState('');
   const [isCalculate, setIsCalculate] = useState(false);
 
@@ -84,7 +75,7 @@ function TaylorPolynomial() {
     e.preventDefault();
     setTaylorEquation('');
     setTaylorResult({});
-    setDegree(0)
+    setDegree(0);
     setTaylorValue(0);
     setDecimalPlace(0);
     setIsCalculate(false);
@@ -92,77 +83,126 @@ function TaylorPolynomial() {
 
   return (
     <Box sx={style}>
-      <FormGroup sx={formStyle}>
-        <Typography variant='h2'>
-          ln (x + 1)
-        </Typography>
+      <form onSubmit={handleSubmit} style={formStyle}>
+        <Typography variant="h2">tanh(x)</Typography>
 
-        <Box sx={inputGroup}>
-          <TextField sx={inputStyle} disabled={isCalculate} label='Degree' value={degree} onChange={handleChangeDegree} />
-          <TextField sx={inputStyle} disabled={isCalculate} label='X' value={taylorValue} onChange={handleChangeTaylorValue} />
-          <TextField disabled={isCalculate} label='Decimal places' value={decimalPlace} onChange={handleChangeDecimalPlace} />
-        </Box>
+        <FormGroup style={inputGroup}>
+          <TextField
+            disabled={isCalculate}
+            label="Degree"
+            value={degree}
+            onChange={handleChangeDegree}
+            style={inputStyle}
+          />
+          <TextField
+            disabled={isCalculate}
+            label="X"
+            value={taylorValue}
+            onChange={handleChangeTaylorValue}
+            style={inputStyle}
+          />
+          <TextField
+            disabled={isCalculate}
+            label="Decimal places"
+            value={decimalPlace}
+            onChange={handleChangeDecimalPlace}
+          />
+        </FormGroup>
 
-        {!isCalculate && <Button variant="contained" type="submit" onClick={handleSubmit}> Calculate </Button>}
-        {isCalculate && <Button variant="contained" onClick={handleReset}> Reset </Button>}
+        {!isCalculate && (
+        <Button variant="outlined" type="submit" style={{ width: '200px', color: 'purple' }}>
+        Calculate
+          </Button>
+        )}
+        {isCalculate && (
+        <Button variant="outlined" onClick={handleReset} style={{ width: '200px', color: 'purple' }}>
+        Reset
+          </Button>
+        )}
+      </form>
 
-      </FormGroup>
-        {/* where math equation happens */}
-      {isCalculate && <>
-        <Box sx={outputContainer}>
-          <InlineMath>{`n=${degree}`}</InlineMath>
-          <InlineMath>{`x=${taylorValue}`}</InlineMath>
-        </Box>
+      {isCalculate && (
+        <>
+          <Box style={mathContainer}>
+            <BlockMath>{`P_{${degree}}(x)=${taylorEquation}`}</BlockMath>
+            <Typography style={{ marginTop: '1em' }}>
+              {`True Value: ${taylorResult.trueValue}`}
+            </Typography>
+          </Box>
 
-        <Box sx={mathContainer}>
-          <BlockMath >{`P_{${degree}}(x)=${taylorEquation}`}</BlockMath>
-          <Typography sx={{ marginTop: "1em" }}> {`True Value: ${taylorResult.trueValue}`}</Typography>
-        </Box>
+          <Box style={mathContainer}>
+            <Box style={output}>
+              <Box style={{ marginBottom: '1em' }}>
+                <Typography>Chopped value:</Typography>
+                <InlineMath>{`P_{${degree}}(x) = ${taylorResult.chopped}`}</InlineMath>
+              </Box>
 
-        <Box sx={errorOutputContainer}>
-          <Box sx={output}> 
-            <Box sx={{ marginBottom: "1em" }}>
-              <Typography> Chopped value: </Typography>
-              <InlineMath >{`P_{${degree}}(x) = ${taylorResult.chopped}`}</InlineMath>
+              <Box style={{ marginBottom: '1em' }}>
+                <Typography>True Error:</Typography>
+                <InlineMath>
+                  {`${calculateTrueError(
+                    taylorResult.trueValue,
+                    taylorResult.chopped
+                  )}`}
+                </InlineMath>
+              </Box>
+
+              <Box style={{ marginBottom: '1em' }}>
+                <Typography>Relative Error (%):</Typography>
+                <InlineMath>
+                  {`${calculateRelativeError(
+                    taylorResult.trueValue,
+                    taylorResult.chopped
+                  )}`}
+                </InlineMath>
+              </Box>
             </Box>
 
-            <Box sx={{ marginBottom: "1em" }}>
-              <Typography> True Error:</Typography>
-              <InlineMath>{`${calculateTrueError(taylorResult.trueValue, taylorResult.chopped)}`}</InlineMath>
-            </Box>
+            <Box style={output}>
+              <Box style={{ marginBottom: '1em' }}>
+                <Typography>Rounded value:</Typography>
+                <InlineMath>{`P_{${degree}}(x) = ${taylorResult.rounded}`}</InlineMath>
+              </Box>
 
-            <Box sx={{ marginBottom: "1em" }}>
-              <Typography> Relative Error (%): </Typography>
-              <InlineMath>{`${calculateRelativeError(taylorResult.trueValue, taylorResult.chopped)}`}</InlineMath>
+              <Box style={{ marginBottom: '1em' }}>
+                <Typography>True Error:</Typography>
+                <InlineMath>
+                  {`${calculateTrueError(
+                    taylorResult.trueValue,
+                    taylorResult.rounded
+                  )}`}
+                </InlineMath>
+              </Box>
+
+              <Box style={{ marginBottom: '1em' }}>
+                <Typography>Relative Error (%):</Typography>
+                <InlineMath>
+                  {`${calculateRelativeError(
+                    taylorResult.trueValue,
+                    taylorResult.rounded
+                  )}`}
+                </InlineMath>
+              </Box>
             </Box>
           </Box>
 
-          <Box sx={output}> 
-            <Box sx={{ marginBottom: "1em" }}>
-              <Typography> Rounded value: </Typography>
-              <InlineMath >{`P_{${degree}}(x) = ${taylorResult.rounded}`}</InlineMath>
-            </Box>
-
-            <Box sx={{ marginBottom: "1em" }}>
-              <Typography> True Error: </Typography> 
-              <InlineMath>
-                {`${calculateTrueError(taylorResult.trueValue, taylorResult.rounded)}`}
-              </InlineMath>
-            </Box>
-
-            <Typography> Relative Error (%) </Typography>
-            <InlineMath>
-              {`${calculateRelativeError(taylorResult.trueValue, taylorResult.rounded)} `}
-            </InlineMath>
-          </Box>
-        </Box>
-      </>}
-
-      {isCalculate && <Typography sx={{ fontWeight: "bold", marginBottom: '0.5em' }}>
-        {`Answer = ${calculateTrueError(taylorResult.trueValue, taylorResult.chopped) < calculateTrueError(taylorResult.trueValue, taylorResult.rounded) ? taylorResult.chopped : taylorResult.rounded}`}
-      </Typography>}
+          <Typography
+            style={{ fontWeight: 'bold', marginBottom: '0.5em' }}
+          >
+            {`Answer = ${
+              calculateTrueError(taylorResult.trueValue, taylorResult.chopped) <
+              calculateTrueError(
+                taylorResult.trueValue,
+                taylorResult.rounded
+              )
+                ? taylorResult.chopped
+                : taylorResult.rounded
+            }`}
+          </Typography>
+        </>
+      )}
     </Box>
-  )
+  );
 }
 
-export default TaylorPolynomial
+export default TaylorPolynomial;

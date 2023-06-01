@@ -6,24 +6,24 @@
     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background-start-rgb: 188, 171, 206;
+  --background-end-rgb: 245, 239, 223;
 
   --primary-glow: conic-gradient(
     from 180deg at 50% 50%,
-    #16abff33 0deg,
-    #0885ff33 55deg,
-    #54d6ff33 120deg,
-    #0071ff33 160deg,
+    rgba(127, 85, 165, 0.5) 0deg,
+    rgba(127, 85, 165, 0.3) 55deg,
+    rgba(127, 85, 165, 0.2) 120deg,
+    rgba(152, 85, 165, 0.1) 160deg,
     transparent 360deg
   );
   --secondary-glow: radial-gradient(
-    rgba(255, 255, 255, 1),
-    rgba(255, 255, 255, 0)
+    rgba(255, 255, 255, 0.8),
+    rgba(133, 59, 129, 0)
   );
 
-  --tile-start-rgb: 239, 245, 249;
-  --tile-end-rgb: 228, 232, 233;
+  --tile-start-rgb: 221, 205, 229;
+  --tile-end-rgb: 245, 240, 229;
   --tile-border: conic-gradient(
     #00000080,
     #00000040,
@@ -34,10 +34,10 @@
     #00000080
   );
 
-  --callout-rgb: 238, 240, 241;
-  --callout-border-rgb: 172, 175, 176;
-  --card-rgb: 180, 185, 188;
-  --card-border-rgb: 131, 134, 135;
+  --callout-rgb: 221, 210, 215;
+  --callout-border-rgb: 168, 145, 147;
+  --card-rgb: 191, 174, 194;
+  --card-border-rgb: 154, 133, 136;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -88,6 +88,7 @@ body {
 body {
   color: rgb(var(--foreground-rgb));
   background-color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 a {
@@ -99,4 +100,39 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+/* Updated color palette */
+
+:root {
+  --background-start-rgb: 188, 171, 206;
+  --background-end-rgb: 245, 239, 223;
+  --tile-start-rgb: 221, 205, 229;
+  --tile-end-rgb: 245, 240, 229;
+  --callout-rgb: 221, 210, 215;
+  --callout-border-rgb: 168, 145, 147;
+  --card-rgb: 191, 174, 194;
+  --card-border-rgb: 154, 133, 136;
+}
+
+/* Updated glow and fonts */
+
+:root {
+  --primary-glow: conic-gradient(
+    from 180deg at 50% 50%,
+    rgba(165, 85, 165, 0.5) 0deg,
+    rgba(165, 85, 165, 0.3) 55deg,
+    rgba(165, 85, 165, 0.2) 120deg,
+    rgba(165, 85, 165, 0.1) 160deg,
+    transparent 360deg
+    background-color: 'black'
+  );
+  --secondary-glow: radial-gradient(
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0)
+  );
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }

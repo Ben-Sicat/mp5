@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import * as math from 'mathjs';
 import { styled } from '@mui/system';
-import Image from 'next/image';
 import { MainBox } from '..';
 import calcSimpson from '../../../functions/calcSimpson';
 import calcTrapezoid from '../../../functions/calcTrapezoidal';
@@ -23,32 +22,23 @@ import {
 const FormContainer = styled('div')({
   display: 'flex',
   flexDirection: 'column',
-  width: '100vw',
-  gap: '1rem',
-  maxWidth: '400px',
-  margin: '0 auto',
-});
-
-const InputFieldGroup = styled('div')({
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  width: '100vw',
-  gap: '1rem',
-  maxWidth: '400px',
-  margin: '0 auto',
+  alignItems: 'center',
+  gap: '2rem',
 });
 
 const SubmitButton = styled(Button)({
-  backgroundColor: '#2196f3',
+  backgroundColor: '#FF4081',
   color: '#fff',
   '&:hover': {
-    backgroundColor: '#1976d2',
+    backgroundColor: '#D81B60',
   },
 });
 
 const ResultText = styled('p')({
   textAlign: 'center',
+  fontSize: '1.2rem',
+  fontWeight: 'bold',
+  color: '#FF4081',
 });
 
 function UserDefined() {
@@ -62,11 +52,6 @@ function UserDefined() {
   const [result, setResult] = useState('');
 
   function handleSubmit(event) {
-    //  userFunction,
-    // firstGuessPoint,
-    // secondGuessPoint,
-    // tolerance,
-    // numberOfIterations = 0,
     event.preventDefault();
 
     let root;
@@ -86,14 +71,14 @@ function UserDefined() {
 
     setExpression(`(${numeratorFn})/${denominatorFn}`);
 
-    if (method == 'simpson') {
+    if (method === 'simpson') {
       setResult(
         calcSimpson(parseFloat(a), parseFloat(b), parseInt(n), expression)
       );
       return;
     }
 
-    return setResult(
+    setResult(
       calcTrapezoid(parseFloat(a), parseFloat(b), parseInt(n), expression)
     );
   }
@@ -108,11 +93,6 @@ function UserDefined() {
       <Box></Box>
       <form onSubmit={handleSubmit}>
         <FormContainer>
-          <Image
-            src="/images/user-defined-equation.png"
-            width={400}
-            height={180}
-          />
           <FormControl>
             <FormLabel id="demo-row-radio-buttons-group-label">
               Method
@@ -136,40 +116,41 @@ function UserDefined() {
               />
             </RadioGroup>
           </FormControl>
-          <InputFieldGroup>
-            <TextField
-              label="a"
-              type="text"
-              value={a}
-              onChange={e => setA(e.target.value)}
-            />
-            <TextField
-              label="b"
-              type="text"
-              value={b}
-              onChange={e => setB(e.target.value)}
-            />
-            <TextField
-              label="n"
-              type="text"
-              value={n}
-              onChange={e => setN(e.target.value)}
-            />
-          </InputFieldGroup>
-          <InputFieldGroup>
-            <TextField
-              label="f(x)"
-              type="text"
-              value={numeratorFn}
-              onChange={e => setNumeratorFn(e.target.value)}
-            />
-            <TextField
-              label="g(x)"
-              type="text"
-              value={denominatorFn}
-              onChange={e => setDenominatorFn(e.target.value)}
-            />
-          </InputFieldGroup>
+          <TextField
+            label="a"
+            type="text"
+            value={a}
+            onChange={(e) => setA(e.target.value)}
+            variant="outlined"
+          />
+          <TextField
+            label="b"
+            type="text"
+            value={b}
+            onChange={(e) => setB(e.target.value)}
+            variant="outlined"
+          />
+          <TextField
+            label="n"
+            type="text"
+            value={n}
+            onChange={(e) => setN(e.target.value)}
+            variant="outlined"
+          />
+          <TextField
+            label="f(x)"
+            type="text"
+            value={numeratorFn}
+            onChange={(e) => setNumeratorFn(e.target.value)}
+            variant="outlined"
+          />
+          <TextField
+            label="g(x)"
+            type="text"
+            value={denominatorFn}
+            onChange={(e) => setDenominatorFn(e.target.value)}
+            variant="outlined"
+          />
           <SubmitButton variant="contained" type="submit">
             Submit
           </SubmitButton>

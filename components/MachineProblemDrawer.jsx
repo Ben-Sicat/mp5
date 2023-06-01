@@ -40,10 +40,10 @@ export default function DrawerMenu() {
     >
       <List>
         {[
-          { title: 'Machine Problem 1', urlRedirect: 'taylor-approximation' },
-          { title: 'Machine Problem 2', urlRedirect: 'root-finding' },
-          { title: 'Machine Problem 3', urlRedirect: 'interpolation' },
-          { title: 'Machine Problem 4', urlRedirect: 'integral-approximation' },
+          { title: 'MP 1', urlRedirect: 'taylor-approximation' },
+          { title: 'MP 2', urlRedirect: 'root-finding' },
+          { title: 'MP 3', urlRedirect: 'https://machinep3.netlify.app/' },
+          { title: 'MP 4', urlRedirect: 'https://machineprob4.netlify.app/' },
         ].map((page, index) => (
           <ListItem key={page.title} disablePadding>
             <ListItemButton onClick={() => router.push(page.urlRedirect)}>
@@ -62,11 +62,11 @@ export default function DrawerMenu() {
         alignContent: 'center',
         height: '100vh',
         maxHeight: '70px',
-        paddingLeft: 3,
-        backgroundColor: '#1565c0',
+        paddingRight: 3,
+        backgroundColor: 'PURPLE',
       }}
     >
-      {['left'].map(anchor => (
+  {['right'].map(anchor => (
         <React.Fragment key={anchor}>
           <IconButton
             sx={{ color: 'white' }}

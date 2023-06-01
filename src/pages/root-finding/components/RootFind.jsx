@@ -23,11 +23,12 @@ export const inputGroup = {
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'space-around',
+  marginTop: '1em',
 };
 
 export const functionInput = {
   marginTop: '1em',
-  width: '100vw',
+  width: '100%',
   maxWidth: '500px',
   marginBottom: '1em',
 };
@@ -61,13 +62,14 @@ export const outputText = {
 
 export const formContainer = {
   display: 'flex',
-  width: '100vw',
+  width: '100%',
   flexDirection: 'column',
   height: '100%',
   justifyContent: 'center',
   alignSelf: 'center',
   justifySelf: 'center',
   maxWidth: '500px',
+  padding: '1em',
 };
 
 export const equationContainer = {
@@ -79,7 +81,7 @@ function RootFind() {
     useState('predefined');
 
   const [rootFindInput, setRootFindInput] = useState({
-    userFunction: rootFunctionValueType === 'predefined' ? 'log(x+1,e)' : '',
+    userFunction: rootFunctionValueType === 'predefined' ? 'tanh(x)' : '',
     firstGuessPoint: 0,
     secondGuessPoint: 1,
     tolerance: 0,
@@ -126,174 +128,125 @@ function RootFind() {
     setRootFunctionValueType(e.target.value);
     setRootFindInput(prev => ({
       ...prev,
-      userFunction: e.target.value === 'predefined' ? 'log(x+1,e)' : 'f(x)',
+      userFunction: e.target.value === 'predefined' ? 'tanh(x)' : '',
     }));
   }
 
   return (
-    <Box sx={formContainer}>
-      <FormControl>
+    <form style={formContainer} onSubmit={handleSubmit}>
+      <FormControl style={inputStyle}>
+        <InputLabel id="root-find-function-type-label">
+          Function Type
+        </InputLabel>
         <Select
-          id="select"
-          sx={{ marginBottom: '1em' }}
-          defaultValue="predefined"
+          labelId="root-find-function-type-label"
+          id="root-find-function-type"
           value={rootFunctionValueType}
           onChange={handleChange}
         >
-          <MenuItem value={'predefined'}>Pre-defined function</MenuItem>
-          <MenuItem value={'userdefined'}>Define a function</MenuItem>
+          <MenuItem value="predefined">Predefined</MenuItem>
+          <MenuItem value="custom">Custom</MenuItem>
         </Select>
       </FormControl>
 
-      <FormControl>
-        <FormLabel id="root-find-approach-label">Approach</FormLabel>
-        <RadioGroup
-          row
-          name="root-find-approach-group"
+      {rootFunctionValueType === 'custom' && (
+        <TextField
+          style={functionInput}
+          id="root-find-function"
+          label="Function"
+          value={rootFindInput.userFunction}
+          onChange={(e) => setRootFindInput((prev) => ({ ...prev, userFunction: e.target.value }))}
+        />
+      )}
+
+      <Box style={inputGroup}>
+        <TextField
+          id="root-find-guess-point-1"
+          label="Guess Point 1"
+          type="number"
+          value={rootFindInput.firstGuessPoint}
+          onChange={(e) => setRootFindInput((prev) => ({ ...prev, firstGuessPoint: e.target.value }))}
+        />
+
+        <TextField
+          id="root-find-guess-point-2"
+          label="Guess Point 2"
+          type="number"
+          value={rootFindInput.secondGuessPoint}
+          onChange={(e) => setRootFindInput((prev) => ({ ...prev, secondGuessPoint: e.target.value }))}
+        />
+      </Box>
+
+      <Box style={inputGroup}>
+        <TextField
+          id="root-find-tolerance"
+          label="Tolerance"
+          type="number"
+          value={rootFindInput.tolerance}
+          onChange={(e) => setRootFindInput((prev) => ({ ...prev, tolerance: e.target.value }))}
+        />
+
+        <TextField
+          id="root-find-iterations"
+          label="Number of Iterations"
+          type="number"
+          value={rootFindInput.numberOfIterations}
+          onChange={(e) => setRootFindInput((prev) => ({ ...prev, numberOfIterations: e.target.value }))}
+        />
+      </Box>
+
+      <FormControl style={inputStyle}>
+        <InputLabel id="root-find-approach-label">Approach</InputLabel>
+        <Select
+          labelId="root-find-approach-label"
+          id="root-find-approach"
           value={selectedApproach}
           onChange={handleApproachChange}
         >
-          <FormControlLabel
-            value="iterative"
-            control={<Radio />}
-            label="Iterative approach"
-          />
-          <FormControlLabel
-            value="tolerance"
-            control={<Radio />}
-            label="Tolerance approach (Ɛ)"
-          />
-        </RadioGroup>
+          <MenuItem value="iterative">Iterative</MenuItem>
+          <MenuItem value="tolerance">Tolerance</MenuItem>
+        </Select>
       </FormControl>
 
-      <FormControl>
-        <FormLabel id="root-find-method-label">Method</FormLabel>
-        <RadioGroup
-          row
-          name="root-find-method-group"
+      <FormControl style={inputStyle}>
+        <InputLabel id="root-find-method-label">Method</InputLabel>
+        <Select
+          labelId="root-find-method-label"
+          id="root-find-method"
           value={selectedMethod}
           onChange={handleMethodChange}
         >
-          <FormControlLabel
-            value="bisection"
-            control={<Radio />}
-            label="Bisection method"
-          />
-          <FormControlLabel
-            value="secant"
-            control={<Radio />}
-            label="Secant method"
-          />
-        </RadioGroup>
+          <MenuItem value="bisection">Bisection</MenuItem>
+          <MenuItem value="secant">Secant</MenuItem>
+        </Select>
       </FormControl>
 
-      <Box sx={equationContainer}>
-        {rootFunctionValueType === 'predefined' && (
-          <Typography variant="h3"> ln(x + 1)</Typography>
-        )}
-        {rootFunctionValueType === 'userdefined' && (
-          <TextField
-            sx={functionInput}
-            id="equation"
-            label="f(x)"
-            value={rootFindInput.userFunction}
-            onChange={e =>
-              setRootFindInput(prev => ({
-                ...prev,
-                userFunction: e.target.value,
-              }))
-            }
-          />
-        )}
-      </Box>
-
-      <FormControl sx={inputGroup}>
-        <TextField
-          sx={inputStyle}
-          id="first_guess"
-          label="x0"
-          value={rootFindInput.firstGuessPoint}
-          onChange={e =>
-            setRootFindInput(prev => ({
-              ...prev,
-              firstGuessPoint: e.target.value,
-            }))
-          }
-        />
-
-        <TextField
-          sx={inputStyle}
-          id="equation"
-          label="x1"
-          value={rootFindInput.secondGuessPoint}
-          onChange={e =>
-            setRootFindInput(prev => ({
-              ...prev,
-              secondGuessPoint: e.target.value,
-            }))
-          }
-        />
-
-        {selectedApproach === 'iterative' && (
-          <TextField
-            id="equation"
-            label="n"
-            value={rootFindInput.numberOfIterations}
-            onChange={e =>
-              setRootFindInput(prev => ({
-                ...prev,
-                numberOfIterations: e.target.value,
-              }))
-            }
-          />
-        )}
-
-        {selectedApproach === 'tolerance' && (
-          <TextField
-            id="equation"
-            label="Ɛ"
-            value={rootFindInput.tolerance}
-            onChange={e =>
-              setRootFindInput(prev => ({ ...prev, tolerance: e.target.value }))
-            }
-          />
-        )}
-      </FormControl>
-
-      <Button variant="contained" type="submit" onClick={handleSubmit}>
+      <Button variant="contained" color="primary" type="submit">
         Calculate
       </Button>
 
-      {!isCalculate && (
-        <Typography type="error" sx={{ color: 'red' }}>
-          {errMessage}
-        </Typography>
-      )}
       {isCalculate && (
-        <>
-          <Box sx={outputContainer}>
-            <p>{`c = ${
-              rootFindOutput.stack[rootFindOutput.stack.length - 1].nextPoint
-            }`}</p>
-            <p>{`f(c) = ${
-              rootFindOutput.stack[rootFindOutput.stack.length - 1]
-                .nextPointOutput
-            }`}</p>
-            <p>{`${
-              selectedApproach === 'iterative'
-                ? `Ɛ = ${
-                    rootFindOutput.stack[rootFindOutput.stack.length - 1]
-                      .toleranceValue
-                  }`
-                : `n = ${
-                    rootFindOutput.stack[rootFindOutput.stack.length - 1]
-                      .iteration
-                  }`
-            }`}</p>
-          </Box>
-        </>
+        <div style={outputContainer}>
+          {rootFindOutput.map((step, index) => (
+            <div key={index} style={output}>
+              <Typography variant="h6" style={outputText}>
+                Step {index + 1}
+              </Typography>
+              <Typography variant="body1" style={outputText}>
+                Root: {step.root}
+              </Typography>
+              <Typography variant="body1" style={outputText}>
+                f(Root): {step.functionValue}
+              </Typography>
+              <Typography variant="body1" style={outputText}>
+                Error: {step.error}
+              </Typography>
+              <br />
+            </div>
+          ))}
+        </div>
       )}
-    </Box>
+    </form>
   );
 }
 
